@@ -18,7 +18,7 @@
                 ━━ clinic
               </h1>
               <div class="tw-row-span-5 tw-flex tw-justify-center">
-                <v-btn>More details</v-btn>
+                <v-btn :to="'#' + cate.id">More details</v-btn>
               </div>
             </div>
           </div>
@@ -26,6 +26,7 @@
       </v-carousel-item>
     </v-carousel>
     <v-card
+      :id="cate.id"
       elevation="1"
       v-for="(cate, index) in categories"
       :key="index"
@@ -61,7 +62,11 @@ export default {
     };
   },
   async created() {
-    this.categories = await this.$axios.$get("/api/event-categories");
+    try {
+      this.categories = await this.$axios.$get("/api/event-categories");
+    } catch (e) {
+      this.categories = [];
+    }
   },
 };
 </script>

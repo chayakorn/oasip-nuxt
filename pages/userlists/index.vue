@@ -5,6 +5,7 @@ import { mdiApplicationEditOutline, mdiDelete } from "@mdi/js";
 export default {
   data() {
     return {
+      empty: false,
       userLists: [],
       momentUse: moment,
       icon: {
@@ -16,8 +17,12 @@ export default {
   methods: {
     getUser() {},
   },
-  async created() {
-    this.userLists = await this.$axios.$get("/api/users");
+  async mounted() {
+    try {
+      this.userLists = await this.$axios.$get("/api/users");
+    } catch (e) {
+      this.empty = true;
+    }
   },
   // async asyncData({ $axios }) {
   //   let { data } = await $axios.get("/api/users");
@@ -32,7 +37,8 @@ export default {
       <h1 class="tw-text-5xl tw-font-bold">Users</h1>
       <p>{{ userLists.length }} users</p>
     </div>
-    <div>
+
+    <div v-if="!empty">
       <v-card v-for="(user, index) in userLists" :key="index">
         <div class="tw-flex tw-flex-row tw-m-4 tw-text-center tw-items-center">
           <div
@@ -83,6 +89,9 @@ export default {
           </div>
         </div>
       </v-card>
+    </div>
+    <div class="text-center" v-if="empty">
+      <h1 class="tw-text-5xl tw-font-bold tw-text-gray-400">No Users</h1>
     </div>
   </div>
 </template>

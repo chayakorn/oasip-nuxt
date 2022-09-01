@@ -78,7 +78,7 @@ export default {
     },
     publicRuntimeConfig: {
         axios: {
-            baseURL: "http://intproj21.sit.kmutt.ac.th/us1/",
+            baseURL: process.env.API_URL,
         },
     },
 };

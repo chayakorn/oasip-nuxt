@@ -1,6 +1,7 @@
 <script>
 import axios from "@nuxtjs/axios";
 import moment from "moment";
+import Swal from "sweetalert2";
 import { mdiApplicationEditOutline, mdiDelete } from "@mdi/js";
 export default {
   data() {
@@ -12,14 +13,38 @@ export default {
         mdiApplicationEditOutline,
         mdiDelete,
       },
+      alt: Swal,
     };
   },
   methods: {
-    getUser() {},
+    async deleteUser(id) {
+      this.alt
+        .fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, delete it!",
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            this.$axios.$delete(`/api/users/${id}`).then(() => {
+              this.getUserList();
+            });
+
+            Swal.fire("Deleted!", "Your file has been deleted.", "success");
+          }
+        });
+    },
+    async getUserList() {
+      this.userLists = await this.$axios.$get("/api/users");
+    },
   },
   async mounted() {
     try {
-      this.userLists = await this.$axios.$get("/api/users");
+      this.getUserList();
     } catch (e) {
       this.empty = true;
     }
@@ -85,7 +110,9 @@ export default {
                 icon.mdiApplicationEditOutline
               }}</v-icon></nuxt-link
             >
-            <v-icon large>{{ icon.mdiDelete }}</v-icon>
+            <v-icon large @click="deleteUser(user.id)">{{
+              icon.mdiDelete
+            }}</v-icon>
           </div>
         </div>
       </v-card>

@@ -31,12 +31,13 @@ export default {
     },
     edit() {
       if (this.$refs.form.validate()) {
-        this.$axios.$put(`/api/users/${this.user.id}`, {
-          name: this.user.name,
-          email: this.user.email,
-          role: this.user.role,
-        });
-        this.$router.push("/userlists");
+        this.$axios
+          .$put(`/api/users/${this.user.id}`, {
+            name: this.user.name,
+            email: this.user.email,
+            role: this.user.role,
+          })
+          .then(() => this.$router.push("/userlists"));
       }
     },
   },
@@ -84,7 +85,6 @@ export default {
         </v-form>
       </div>
     </div>
-    {{ user }}
   </div>
 </template>
 

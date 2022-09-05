@@ -5,27 +5,10 @@ import axios from "@nuxtjs/axios";
 export default {
   data() {
     return {
-      roles: ["student", "lecturer", "admin"],
       formValid: true,
-      user: { role: "student" },
+      user: {},
       momentUse: moment,
-      userLists: [],
-      nameRules: [
-        (name) => !!name || "Name is required",
-        (name) =>
-          (name && name.length <= 100) ||
-          "Name must be less than 100 characters",
-      ],
-      passwordRules: [
-        (p) => !!p || "Password is required",
-        (p) =>
-          (p && p.length >= 8 && p.length <= 14) ||
-          "Password must between 8 and 14",
-      ],
-      confirmPasswordRules: [
-        (p) => !!p || "Password is required",
-        (p) => p == this.user.password || "Password not match",
-      ],
+      passwordRules: [(p) => !!p || "Password is required"],
       emailRules: [
         (email) => !!email || "Email is required",
         (email) => /.+.@.+\..+/.test(email) || "Email must be valid",
@@ -33,36 +16,21 @@ export default {
     };
   },
   methods: {
-    create() {
-      if (this.$refs.form.validate() && this.checkUnique()) {
+    login() {
+      if (this.$refs.form.validate()) {
         this.$axios
-          .$post(`/api/users`, {
-            name: this.user.name,
+          .$post(`/api/login`, {
             email: this.user.email,
             password: this.user.password,
-            role: this.user.role,
           })
-          .then(() => {
+          .then((res) => {
+            localStorage.setItem("token", res.token);
             this.$router.push("/userlists");
           });
       }
     },
-    checkUnique() {
-      let nameList = [];
-      let emailList = [];
-      this.userLists.forEach((u) => {
-        nameList.push(u.name);
-        emailList.push(u.email);
-      });
-      return (
-        !nameList.includes(this.user.name) &&
-        !emailList.includes(this.user.email)
-      );
-    },
   },
-  async created() {
-    this.userLists = await this.$axios.$get("/api/users");
-  },
+  async created() {},
 };
 </script>
 
@@ -93,20 +61,11 @@ export default {
           </div>
         </div>
         <div class="tw-bg-white tw-text-center">
-          <h1 class="tw-mt-10 tw-text-3xl tw-font-semibold">Signup</h1>
+          <h1 class="tw-mt-10 tw-text-3xl tw-font-semibold">Signin</h1>
           <v-form class="tw-m-10 tw-text-center" ref="form" v-model="formValid">
-            <v-text-field
-              v-model="user.name"
-              label="Name"
-              :counter="100"
-              :rules="nameRules"
-              required
-            >
-            </v-text-field>
             <v-text-field
               v-model="user.email"
               label="Email"
-              :counter="50"
               :rules="emailRules"
               required
             ></v-text-field>
@@ -116,25 +75,10 @@ export default {
               label="Password"
               :rules="passwordRules"
               required
-            /><v-text-field
-              type="password"
-              v-model="user.comfirmpassword"
-              label="Confrimpassword"
-              :rules="confirmPasswordRules"
-              required
             />
-            <v-radio-group v-model="user.role" row>
-              <v-radio
-                v-for="(n, index) in roles"
-                :key="index"
-                :label="n"
-                :value="n"
-                color="black"
-              ></v-radio>
-            </v-radio-group>
             <v-btn
               class="tw-bg-gradient-to-r tw-from-[#6196FF] tw-to-[#A9B5FF] tw-w-[100%]"
-              @click="create"
+              @click="login"
               ><div class="tw-text-white">Join us</div></v-btn
             >
           </v-form>

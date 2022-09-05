@@ -55,6 +55,7 @@
 <style></style>
 <script>
 import axios from "@nuxtjs/axios";
+
 export default {
   data() {
     return {
@@ -62,11 +63,13 @@ export default {
     };
   },
   async created() {
-    try {
-      this.categories = await this.$axios.$get("/api/event-categories");
-    } catch (e) {
-      this.categories = [];
-    }
+    this.categories = await this.$axios
+      .$get("/api/event-categories", {
+        headers: { Authorization: `US1 ${localStorage.getItem("token")}` },
+      })
+      .catch((e) => {
+        this.$router.push("/signin");
+      });
   },
 };
 </script>

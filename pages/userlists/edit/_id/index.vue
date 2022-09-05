@@ -33,9 +33,12 @@ export default {
       if (this.$refs.form.validate()) {
         this.$axios
           .$put(`/api/users/${this.user.id}`, {
-            name: this.user.name,
-            email: this.user.email,
-            role: this.user.role,
+            headers: { Authorization: `US1 ${localStorage.getItem("token")}` },
+            body: {
+              name: this.user.name,
+              email: this.user.email,
+              role: this.user.role,
+            },
           })
           .then(() => this.$router.push("/userlists"));
       }
@@ -43,6 +46,7 @@ export default {
   },
   created() {
     this.getUser();
+    this.user.id = this.$route.params.id;
   },
 };
 </script>

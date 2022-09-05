@@ -76,9 +76,12 @@ export default {
             autoprefixer: {},
         },
     },
-    publicRuntimeConfig: {
-        axios: {
-            baseURL: process.env.API_URL,
-        },
+    // publicRuntimeConfig: {
+    //     axios: {
+    //         // baseURL: process.env.API_URL,
+    //     },
+    // },
+    axios: {
+        baseURL: process.env.API_URL, // Used as fallback if no runtime config is provided
     },
 };

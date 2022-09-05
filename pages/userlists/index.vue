@@ -30,16 +30,28 @@ export default {
         })
         .then((result) => {
           if (result.isConfirmed) {
-            this.$axios.$delete(`/api/users/${id}`).then(() => {
-              this.getUserList();
-            });
+            this.$axios
+              .$delete(`/api/users/${id}`, {
+                headers: {
+                  Authorization: `US1 ${localStorage.getItem("token")}`,
+                },
+              })
+              .then(() => {
+                this.getUserList();
+              });
 
             Swal.fire("Deleted!", "Your file has been deleted.", "success");
           }
         });
     },
     async getUserList() {
-      this.userLists = await this.$axios.$get("/api/users");
+      this.userLists = await this.$axios
+        .$get("/api/users", {
+          headers: { Authorization: `US1 ${localStorage.getItem("token")}` },
+        })
+        .catch((e) => {
+          this.$router.push("/signin");
+        });
     },
   },
   async mounted() {
@@ -58,12 +70,19 @@ export default {
 
 <template>
   <div class="tw-m-5">
-    <div>
-      <h1 class="tw-text-5xl tw-font-bold">Users</h1>
-      <p>{{ userLists.length }} users</p>
+    <div class="tw-grid tw-grid-cols-2">
+      <div>
+        <h1 class="tw-text-5xl tw-font-bold">Users</h1>
+        <p>{{ userLists.length }} users</p>
+      </div>
+      <div class="tw-grid tw-place-content-end">
+        <v-btn class="mx-2" fab dark color="indigo" nuxt to="/createuser">
+          <v-icon dark> mdi-plus </v-icon>
+        </v-btn>
+      </div>
     </div>
 
-    <div v-if="!empty">
+    <div class="tw-mt-5" v-if="!empty">
       <v-card v-for="(user, index) in userLists" :key="index">
         <div class="tw-flex tw-flex-row tw-m-4 tw-text-center tw-items-center">
           <div

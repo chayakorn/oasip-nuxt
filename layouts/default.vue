@@ -48,7 +48,7 @@
         </v-list></v-menu
       >
       <v-btn nuxt to="/category" text>categories</v-btn>
-      <v-btn nuxt to="/signup" text>signup</v-btn>
+      <v-btn nuxt to="/signin" text>signin</v-btn>
 
       <!-- <v-toolbar-title v-text="tile"></v-toolbar-title> -->
       <v-btn icon @click.stop="drawer = !drawer">
